@@ -92,7 +92,6 @@ if ($code) {
 
         <?php
         if (isset($thrash) && $thrash) {
-            //if ($thrash['display_url'] == 1) echo "<p>URL original: $thrash[original_url]</p>";
             ?>
             <p>URL original: <?php echo htmlentities($thrash->original_url); ?></p>
             <meta property="og:image" content="<?php echo $thrash->get_image_path(); ?>"/>

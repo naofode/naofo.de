@@ -14,10 +14,10 @@ class Thrash {
 	public $image_owner_id;
 	private $image_path;
 
-	public function __construct($title = null, $original_url = null) {
-		$this->title = $title;
-		$this->original_url = $original_url;
-	}
+        public function __construct($title = null, $original_url = null) {
+                if ($title) $this->title = $title;
+                if ($original_url) $this->original_url = $original_url;
+        }
 
 	public function get_image_path() {
 		if ($this->image_owner_id) {
