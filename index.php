@@ -149,6 +149,7 @@ if ($code) {
 
         <div class="footer-container">
             <footer class="wrapper">
+                <a href="https://github.com/pedromoraes/naofo.de">código fonte</a>
             </footer>
         </div>
 

@@ -115,6 +115,9 @@ body {
     background: #c00000;
 }
 
+.footer-container {
+    margin-top: 20px;
+}
 header .title {
     font-weight: normal;
     color: white;
