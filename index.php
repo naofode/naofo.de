@@ -9,7 +9,7 @@ if ($code) {
     if ($thrash = Thrash::get_by_code($code)) {
         include_once("Mobile_Detect.php");
         $detect = new Mobile_Detect();
-        if ($detect->isMobile() && !$detect->isTablet()) {
+        if ($detect->isMobile()) { //the big <img> isn't working on iOS, don't know why.
             header("Location: ".$thrash->get_image_path());
             die();
         }
