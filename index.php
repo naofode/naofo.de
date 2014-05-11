@@ -7,6 +7,12 @@ $title = "<strong>naofo.de</strong> | encurtador higiênico de chorume";
 if ($code) {
     include_once("Thrash.class.php");
     if ($thrash = Thrash::get_by_code($code)) {
+        include_once("Mobile_Detect.php");
+        $detect = new Mobile_Detect();
+        if ($detect->isMobile() && !$detect->isTablet()) {
+            header("Location: ".$thrash->get_image_path());
+            die();
+        }
         $title = "<strong>naofo.de</strong> | {$thrash->title}";
     } else {
         die('codigo invalido');
