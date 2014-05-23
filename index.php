@@ -75,6 +75,8 @@ if ($code) {
             $("form").submit(function() {
                 ga('send', 'event', 'action', 'generate', $("input[name=url]").val());
             });
+
+            $("form input[type=text]").focus();
         });
         </script>
 
@@ -129,8 +131,8 @@ if ($code) {
                     	<p>
                     		<form method="post">
                     			<input type="submit" value="prosseguir" />
-                    			<fieldset>Endereço: <input type="text" name="url" /></fieldset>
-                    			<!--fieldset><input type="checkbox" name="display_url" value="1" /> <small>exibir endereço original</small></fieldset-->
+                    			<fieldset>Endereço: <input type="text" name="url" value="<?php echo @$_GET['url']; ?>" /></fieldset>
+					<?php if (@$_GET['error'] == 'load') : ?><span class="error">Não foi possível carregar a página. Por favor, confira o endereço e tente novamente.</span><?php endif; ?>
                                 <fieldset class="title"><label>Título:</label><textarea name="title"></textarea></fieldset>
                     		</form>
                     	</p>
