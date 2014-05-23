@@ -1,5 +1,5 @@
 !#/bin/bash
-wkhtmltoimage --width 1280 $1 $2 > /dev/null
+wkhtmltoimage --width 1280 "$1" $2 > /dev/null
 if [ $? -ne 0 ]; then
     wkhtmltoimage --disable-javascript --load-error-handling ignore --disable-plugins --width 1280 "$1?&retry" $2 > /dev/null
     if [ $? -ne 0 ]; then
