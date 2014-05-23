@@ -148,6 +148,14 @@ form textarea {
     width: 395px;
 }
 
+form .error {
+    font-size: small;
+    color: red;
+    display: block;
+    padding: 0 100px 0 0;
+    line-height: 120%;
+}
+
 /* ==============
     MOBILE: Menu
    ============== */
