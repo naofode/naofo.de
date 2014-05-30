@@ -1,8 +1,13 @@
 !#/bin/bash
-wkhtmltoimage --width 1280 $1 $2 > /dev/null
-if [ $? -ne 0 ]; then
-    wkhtmltoimage --disable-javascript --load-error-handling ignore --disable-plugins --width 1280 "$1?&retry" $2 > /dev/null
-    if [ $? -ne 0 ]; then
+min_size=1024
+wkhtmltoimage --width 1280 $1 $2
+actual_size=$(stat -c%s $2)
+echo $actual_size
+if [[ ( $? -ne 0 ) || ( $actualsize -lt $min_size ) ]]; then
+    wkhtmltoimage --custom-header 'User-Agent' 'Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30' --custom-header-propagation --enable-javascript --javascript-delay 3500 --no-stop-slow-scripts --debug-javascript --load-error-handling ignore --width 1280 "$1?&retry" $2
+    actual_size=$(stat -c%s $2)
+	echo [ $actualsize -lt $min_size ]
+    if [[ ( $? -ne 0 ) || ( $actualsize -lt $min_size ) ]]; then
 	echo "error"
 	exit
     fi
