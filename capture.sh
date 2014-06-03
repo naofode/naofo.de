@@ -14,6 +14,7 @@ if [[ ( $file_size -lt $min_size ) ]]; then
 fi
 convert $2 -trim png8:$2-trimmed > /dev/null
 mv $2-trimmed $2
+file_size=$(stat -c%s $2)
 if [[ ( $file_size -gt $max_size ) ]]; then
 	rm $2
 	echo "error"
