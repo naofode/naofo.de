@@ -120,7 +120,7 @@ include_once("lib/recaptchalib.php");
                                 <?php if (@$_GET['error'] == 'load') : ?><span class="error">Não foi possível carregar a página. Por favor, confira o endereço e tente novamente.</span><?php endif; ?>
                                 <fieldset class="title <?php if (isset($_POST['title'])): ?>filled<?php endif; ?>"><label>Título:</label><textarea name="title"><?php echo @$_POST['title']; ?></textarea></fieldset>
                                 <fieldset class="captcha <?php if ($error): ?>error<?php endif; ?>"> 
-                                    <label>Erro no captcha. Tente novamente:</label>
+                                    <label>Erro no captcha. Tente novamente:</label><!-- <?php echo $error; ?> -->
                                     <?php
                                     echo recaptcha_get_html($publickey, $error);
                                     ?>

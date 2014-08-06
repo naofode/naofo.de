@@ -68,10 +68,10 @@ class Thrash {
 		$old = Thrash::get_by_url($url);
 
 		$new = new Thrash($title, $url);
-	    	try { 
+	    try {
 			$new->save();
-		} catch(PDOExecption $e) { 
-			print "Error!: " . $e->getMessage() . "</br>"; 
+		} catch(PDOExecption $e) {
+			print "Error!: " . $e->getMessage() . "</br>";
 		}
 
 		if ($old) {
@@ -81,7 +81,7 @@ class Thrash {
 		if ($old && $today->diff($date)->days <= 1) {
 			$db->prepare("update thrash set image_owner_id={$old->id} where id={$new->id}")->execute();
 		} else {
-			$path = dirname(__FILE__).'/'.Thrash::$image_storage_base;
+			$path = dirname(__FILE__).'/../'.Thrash::$image_storage_base;
 			$return = shell_exec("../capture.sh \"$url\" $path{$new->code}.png");
 			if (trim($return) == "error") {
 				$db->rollBack();
