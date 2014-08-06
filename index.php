@@ -2,7 +2,7 @@
 require_once('lib/recaptchalib.php');
 $publickey = "6LdvGPgSAAAAAOy3VM-V2RUyl2WaYF-JjPgp5Q4L";
 $privatekey = "6LdvGPgSAAAAANpoghdFXV7QMM6t1fAD5IKM7AaY";
-
+$error = null;
 $uri = strtok($_SERVER['REQUEST_URI'], '?');
 $parts = explode('/', $uri);
 $code = array_pop($parts);
