@@ -31,8 +31,24 @@ a {
 label {
     display: block;
 }
-fieldset.title {
+fieldset.captcha label {
+    padding: 5%;
+    width: 90%;
+}
+fieldset.title, fieldset.captcha, fieldset.captcha label {
     display: none;
+}
+fieldset.captcha.error {
+    display: block;
+    background: red;
+}
+fieldset.captcha.error label {
+    display: block;
+    color: white;
+    font-weight: bold;
+}
+fieldset.title.filled {
+    display: block;
 }
 textarea {
     width: 100%;

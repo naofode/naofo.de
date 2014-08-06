@@ -1,13 +1,17 @@
 <?php
+require_once('lib/recaptchalib.php');
+$publickey = "6LdvGPgSAAAAAOy3VM-V2RUyl2WaYF-JjPgp5Q4L";
+$privatekey = "6LdvGPgSAAAAANpoghdFXV7QMM6t1fAD5IKM7AaY";
+
 $uri = strtok($_SERVER['REQUEST_URI'], '?');
 $parts = explode('/', $uri);
 $code = array_pop($parts);
 $title = "<strong>naofo.de</strong> | encurtador higiênico de chorume";
 
 if ($code) {
-    include_once("Thrash.class.php");
+    include_once("lib/Thrash.class.php");
     if ($thrash = Thrash::get_by_code($code)) {
-        include_once("Mobile_Detect.php");
+        include_once("lib/Mobile_Detect.php");
         $detect = new Mobile_Detect();
         if ($detect->isMobile()) { //the big <img> isn't working on iOS, don't know why.
             header("Location: ".$thrash->get_image_path());
@@ -19,12 +23,26 @@ if ($code) {
     }
 } else {
 	if (isset($_POST['url'])) {
-        include_once("Thrash.class.php");
-		$thrash = Thrash::create($_POST['url'], $_POST['title']);
-        header("Location: {$thrash->code}");
-        die();
+        if ($_POST["recaptcha_response_field"]) {
+                $resp = recaptcha_check_answer ($privatekey,
+                                                $_SERVER["REMOTE_ADDR"],
+                                                $_POST["recaptcha_challenge_field"],
+                                                $_POST["recaptcha_response_field"]);
+
+                if ($resp->is_valid) {    
+                    include_once("lib/Thrash.class.php");
+                    $thrash = Thrash::create($_POST['url'], $_POST['title']);
+                    header("Location: {$thrash->code}");
+                    die();
+                } else {
+                        # set the error code so that we can display it
+                        $error = $resp->error;
+                }
+        }
 	}
 }
+
+include_once("lib/recaptchalib.php");
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -47,39 +65,7 @@ if ($code) {
         <![endif]-->
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script>
-        $(function() {
-
-            $("form input[type=submit]").click(function() {
-                var url = $("input[name=url]").val();
-                if (!url) return;
-                $('div#mask').fadeIn(333);
-                if ($(this).val() == 'gerar') return true;
-                if (url.indexOf('http') != 0) {
-                    url = 'http://'+url;
-                    $("input[name=url]").val(url);
-                }
-                $.get('proxy.php?url='+encodeURIComponent(url), function(response) {
-                    var regex = (/<title>(.*?)<\/title>/m).exec(response);
-                    if (regex != null) {
-                        title = regex[1];
-                        $("textarea").val(title);
-                    }
-                    $("fieldset.title").show();
-                    $("form input[type=submit]").val('gerar');
-                    $("form").addClass('ready');
-                    $('div#mask').fadeOut(333);
-                });
-                return false;
-            });
-            $("form").submit(function() {
-                ga('send', 'event', 'action', 'generate', $("input[name=url]").val());
-            });
-
-            $("form input[type=text]").focus();
-        });
-        </script>
-
+        <script src="js/main.js"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -126,14 +112,19 @@ if ($code) {
             <div class="main-container">
                 <div class="main wrapper clearfix">
                     <article>
-                        <!--div>* ESTAMOS EM FASE DE TESTES * Pode ser que o servidor não aguente o tranco, cruze os dedos daí que eu postergo uma solução daqui</div-->
                     	<h1>Encurtar url</h1>
                     	<p>
                     		<form method="post">
                     			<input type="submit" value="prosseguir" />
                     			<fieldset>Endereço: <input type="text" name="url" value="<?php echo @$_GET['url']; ?>" /></fieldset>
-					<?php if (@$_GET['error'] == 'load') : ?><span class="error">Não foi possível carregar a página. Por favor, confira o endereço e tente novamente.</span><?php endif; ?>
-                                <fieldset class="title"><label>Título:</label><textarea name="title"></textarea></fieldset>
+                                <?php if (@$_GET['error'] == 'load') : ?><span class="error">Não foi possível carregar a página. Por favor, confira o endereço e tente novamente.</span><?php endif; ?>
+                                <fieldset class="title <?php if (isset($_POST['title'])): ?>filled<?php endif; ?>"><label>Título:</label><textarea name="title"><?php echo @$_POST['title']; ?></textarea></fieldset>
+                                <fieldset class="captcha <?php if ($error): ?>error<?php endif; ?>"> 
+                                    <label>Erro no captcha. Tente novamente:</label>
+                                    <?php
+                                    echo recaptcha_get_html($publickey, $error);
+                                    ?>
+                                </fieldset>
                     		</form>
                     	</p>
                     </article>
