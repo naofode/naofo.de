@@ -50,6 +50,9 @@ fieldset.captcha.error label {
 fieldset.title.filled {
     display: block;
 }
+form.scriptlet fieldset.captcha {
+    display: block;
+}
 textarea {
     width: 100%;
 }

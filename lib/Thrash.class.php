@@ -81,7 +81,7 @@ class Thrash {
 		if ($old && $today->diff($date)->days <= 1) {
 			$db->prepare("update thrash set image_owner_id={$old->id} where id={$new->id}")->execute();
 		} else {
-			$path = dirname(__FILE__).'/../'.Thrash::$image_storage_base;
+			$path = $_SERVER['DOCUMENT_ROOT'].'/'.Thrash::$image_storage_base;
 			$return = shell_exec("../capture.sh \"$url\" $path{$new->code}.png");
 			if (trim($return) == "error") {
 				$db->rollBack();

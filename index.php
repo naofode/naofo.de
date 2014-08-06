@@ -22,12 +22,11 @@ if ($code) {
         die('codigo invalido');
     }
 } else {
-	if (isset($_POST['url'])) {
-        if ($_POST["recaptcha_response_field"]) {
+	if (isset($_POST['url']) && isset($_POST["recaptcha_response_field"])) {
                 $resp = recaptcha_check_answer ($privatekey,
                                                 $_SERVER["REMOTE_ADDR"],
-                                                $_POST["recaptcha_challenge_field"],
-                                                $_POST["recaptcha_response_field"]);
+                                                @$_POST["recaptcha_challenge_field"],
+                                                @$_POST["recaptcha_response_field"]);
 
                 if ($resp->is_valid) {    
                     include_once("lib/Thrash.class.php");
@@ -39,7 +38,6 @@ if ($code) {
                         $error = $resp->error;
                 }
         }
-	}
 }
 
 include_once("lib/recaptchalib.php");
@@ -114,9 +112,9 @@ include_once("lib/recaptchalib.php");
                     <article>
                     	<h1>Encurtar url</h1>
                     	<p>
-                    		<form method="post">
-                    			<input type="submit" value="prosseguir" />
-                    			<fieldset>Endereço: <input type="text" name="url" value="<?php echo @$_GET['url']; ?>" /></fieldset>
+                    		<form method="post" class="<?php if (isset($_POST['url']) && isset($_POST['title'])): ?>scriptlet ready<?php endif; ?>">
+                    			<input type="submit" value="<?php if (isset($_POST['url']) && isset($_POST['title'])): ?>gerar<?php else: ?>prosseguir<?php endif; ?>" />
+                    			<fieldset>Endereço: <input type="text" name="url" value="<?php echo @$_REQUEST['url']; ?>" /></fieldset>
                                 <?php if (@$_GET['error'] == 'load') : ?><span class="error">Não foi possível carregar a página. Por favor, confira o endereço e tente novamente.</span><?php endif; ?>
                                 <fieldset class="title <?php if (isset($_POST['title'])): ?>filled<?php endif; ?>"><label>Título:</label><textarea name="title"><?php echo @$_POST['title']; ?></textarea></fieldset>
                                 <fieldset class="captcha <?php if ($error): ?>error<?php endif; ?>"> 
