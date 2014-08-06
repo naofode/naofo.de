@@ -1,5 +1,4 @@
 <?php
-require_once('lib/recaptchalib.php');
 $publickey = "6LdvGPgSAAAAAOy3VM-V2RUyl2WaYF-JjPgp5Q4L";
 $privatekey = getenv('naofode_recaptchakey');
 $error = null;
@@ -22,6 +21,7 @@ if ($code) {
         die('codigo invalido');
     }
 } else {
+	include_once('lib/recaptchalib.php');
 	if (isset($_POST['url']) && isset($_POST["recaptcha_response_field"])) {
                 $resp = recaptcha_check_answer ($privatekey,
                                                 $_SERVER["REMOTE_ADDR"],
