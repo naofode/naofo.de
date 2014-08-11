@@ -84,9 +84,10 @@ if ($code) {
 
         <?php
         if (isset($thrash) && $thrash) {
+            $imgs = $thrash->get_image_path();
             ?>
             <p>URL original: <?php echo htmlentities($thrash->original_url); ?></p>
-            <meta property="og:image" content="<?php echo $thrash->get_image_path()[0]; ?>"/>
+            <meta property="og:image" content="<?php echo $imgs[0]; ?>"/>
             <meta property="og:title" content="<?php echo $title; ?>"/>
             <div id="fb-root"></div>
             <script>(function(d, s, id) {
@@ -103,7 +104,8 @@ if ($code) {
                 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
             </div>
             <?php
-            foreach ($thrash->get_image_path() as $img) echo "<img src=\"$img\" /><br/>";
+            $total = sizeof($imgs);
+            echo "<img src=\"${imgs[0]}\" onload=\"onImgLoad(this)\" data-total=\"$total\" data-index=\"0\" /><br/>";
         } else {
             ?>
             <div id="mask"></div>
