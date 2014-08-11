@@ -12,6 +12,7 @@ class Thrash {
 	public $creator_host;
 	public $date_created;
 	public $image_owner_id;
+	public $slices;
 	private $image_path;
 
         public function __construct($title = null, $original_url = null) {
@@ -22,9 +23,21 @@ class Thrash {
 	public function get_image_path() {
 		if ($this->image_owner_id) {
 			$owner = Thrash::get($this->image_owner_id);
-			return "{$owner->image_storage_base}{$owner->code}.png";
+			if ($owner->slices > 0) {
+				$res = array();
+				for ($i = 0; $i < $owner->slices; $i ++) {
+					array_push($res, "{$owner->image_storage_base}{$owner->code}_$i.png");
+				}
+				return $res;
+			} else return array("{$owner->image_storage_base}{$owner->code}.png");
 		} else {
-			return "{$this->image_storage_base}{$this->code}.png";
+			if ($this->slices > 0) {
+				$res = array();
+				for ($i = 0; $i < $this->slices; $i ++) {
+					array_push($res, "{$this->image_storage_base}{$this->code}_$i.png");
+				}
+				return $res;
+			} else return array("{$this->image_storage_base}{$this->code}.png");
 		}
 	}
 
@@ -81,13 +94,22 @@ class Thrash {
 		if ($old && $today->diff($date)->days <= 1) {
 			$db->prepare("update thrash set image_owner_id={$old->id} where id={$new->id}")->execute();
 		} else {
-			$path = $_SERVER['DOCUMENT_ROOT'].'/'.Thrash::$image_storage_base;
-			$return = shell_exec("../capture.sh \"$url\" $path{$new->code}.png");
-			if (trim($return) == "error") {
+			$basePath = $_SERVER['DOCUMENT_ROOT'].'/';
+			$path = $basePath.Thrash::$image_storage_base;
+			$return = shell_exec($basePath."capture.sh \"$url\" $path{$new->code}.png");
+			$sliceHeight = 768;
+			$info = getimagesize("$path{$new->code}.png");
+			if (!$info) {
 				$db->rollBack();
+				shell_exec("rm $path{$new->code}.png");
 				header("Location: ./?error=load&url=$url");
 				die();
+			} else if ($info[1] > $sliceHeight) {
+				$slices = ceil($info[1]/$sliceHeight);
+				shell_exec($basePath."slice.sh $path{$new->code} $slices");
+				$db->prepare("update thrash set slices=$slices where id={$new->id}")->execute();
 			}
+			shell_exec($basePath."optimize.sh $path{$new->code}.png");
 		}
 		$db->commit();
 		return $new;

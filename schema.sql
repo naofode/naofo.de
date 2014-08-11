@@ -35,6 +35,7 @@ CREATE TABLE `thrash` (
   `creator_id` varchar(255) DEFAULT NULL,
   `display_url` bit(1) DEFAULT b'1',
   `views` int(11) DEFAULT '0',
+  `slices` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

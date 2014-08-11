@@ -7,28 +7,30 @@ $parts = explode('/', $uri);
 $code = array_pop($parts);
 $title = "<strong>naofo.de</strong> | encurtador higiênico de chorume";
 
+include_once("lib/recaptchalib.php");
+
 if ($code) {
     include_once("lib/Thrash.class.php");
     if ($thrash = Thrash::get_by_code($code)) {
-        include_once("lib/Mobile_Detect.php");
-        $detect = new Mobile_Detect();
-        if ($detect->isMobile()) { //the big <img> isn't working on iOS, don't know why.
-            header("Location: ".$thrash->get_image_path());
-            die();
-        }
+        //include_once("lib/Mobile_Detect.php");
+        //$detect = new Mobile_Detect();
+        //if ($detect->isMobile()) { //the big <img> isn't working on iOS, don't know why.
+        //    header("Location: ".$thrash->get_image_path());
+        //    die();
+        //}
         $title = "<strong>naofo.de</strong> | {$thrash->title}";
     } else {
         die('codigo invalido');
     }
 } else {
-	include_once('lib/recaptchalib.php');
-	if (isset($_POST['url']) && isset($_POST["recaptcha_response_field"])) {
-                $resp = recaptcha_check_answer ($privatekey,
+    $test = strpos($_SERVER['HTTP_HOST'], 'localhost') === 0;
+	if (isset($_POST['url']) && ($test || isset($_POST["recaptcha_response_field"]))) {
+                if (!$test) $resp = recaptcha_check_answer ($privatekey,
                                                 $_SERVER["REMOTE_ADDR"],
                                                 @$_POST["recaptcha_challenge_field"],
                                                 @$_POST["recaptcha_response_field"]);
 
-                if ($resp->is_valid) {    
+                if ($test || $resp->is_valid) {    
                     include_once("lib/Thrash.class.php");
                     $thrash = Thrash::create($_POST['url'], $_POST['title']);
                     header("Location: {$thrash->code}");
@@ -39,8 +41,6 @@ if ($code) {
                 }
         }
 }
-
-include_once("lib/recaptchalib.php");
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -86,7 +86,7 @@ include_once("lib/recaptchalib.php");
         if (isset($thrash) && $thrash) {
             ?>
             <p>URL original: <?php echo htmlentities($thrash->original_url); ?></p>
-            <meta property="og:image" content="<?php echo $thrash->get_image_path(); ?>"/>
+            <meta property="og:image" content="<?php echo $thrash->get_image_path()[0]; ?>"/>
             <meta property="og:title" content="<?php echo $title; ?>"/>
             <div id="fb-root"></div>
             <script>(function(d, s, id) {
@@ -102,8 +102,8 @@ include_once("lib/recaptchalib.php");
                 <a href="https://twitter.com/share" class="twitter-share-button" data-lang="pt">Tweetar</a>
                 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
             </div>
-            <img src="<?php echo $thrash->get_image_path(); ?>" />
             <?php
+            foreach ($thrash->get_image_path() as $img) echo "<img src=\"$img\" /><br/>";
         } else {
             ?>
             <div id="mask"></div>
@@ -120,7 +120,7 @@ include_once("lib/recaptchalib.php");
                                 <fieldset class="captcha <?php if ($error): ?>error<?php endif; ?>"> 
                                     <label>Erro no captcha. Tente novamente:</label><!-- <?php echo $error; ?> -->
                                     <?php
-                                    echo recaptcha_get_html($publickey, $error);
+                                    if (!$test) echo recaptcha_get_html($publickey, $error);
                                     ?>
                                 </fieldset>
                     		</form>
