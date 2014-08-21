@@ -27,13 +27,13 @@ $(function() {
     });
 
     $("form input[type=text]").focus();
-
-    window.onImgLoad = function(img) {
-        var i = $(img).data('index'), total = $(img).data('total');
-        if (i < total -1) {
-            var copy = $(img).clone();
-            copy.data('index', i + 1).attr('src', $(img).attr('src').replace('_'+i,'_'+(i+1)));
-            copy.insertAfter(img);
-        }
-    }
 });
+
+window.onImgLoad = function(img) {
+    var i = $(img).data('index'), total = $(img).data('total');
+    if (i < total -1) {
+        var copy = $(img).clone();
+        copy.data('index', i + 1).attr('src', $(img).attr('src').replace('_'+i,'_'+(i+1)));
+        copy.insertAfter(img);
+    }
+}
