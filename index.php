@@ -86,7 +86,7 @@ if ($code) {
         if (isset($thrash) && $thrash) {
             $imgs = $thrash->get_image_path();
             ?>
-            <p>URL original: <?php echo htmlentities($thrash->original_url); ?></p>
+            <p>URL original: <?php echo "<script>document.write(decode_base64('" . base64_encode("<a href=\"{$thrash->original_url}\">{$thrash->original_url}</a>") . "'));</script>"; ?></p>
             <meta property="og:image" content="<?php echo $imgs[0]; ?>"/>
             <meta property="og:title" content="<?php echo $title; ?>"/>
             <div id="fb-root"></div>
@@ -104,8 +104,9 @@ if ($code) {
                 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
             </div>
             <?php
-            $total = sizeof($imgs);
-            echo "<img src=\"${imgs[0]}\" onload=\"onImgLoad(this)\" data-total=\"$total\" data-index=\"0\" /><br/>";
+            foreach ($imgs as $img) {
+                echo "<img src=\"${img}\" /><br/>";
+            }
         } else {
             ?>
             <div id="mask"></div>
@@ -114,7 +115,7 @@ if ($code) {
                     <article>
                     	<h1>Encurtar url</h1>
                     	<p>
-                    		<form method="post" class="<?php if (isset($_POST['url']) && isset($_POST['title'])): ?>scriptlet ready<?php endif; ?>">
+                    		<form accept-charset=\"UTF-8\" method="post" class="<?php if (isset($_POST['url']) && isset($_POST['title'])): ?>scriptlet ready<?php endif; ?>">
                     			<input type="submit" value="<?php if (isset($_POST['url']) && isset($_POST['title'])): ?>gerar<?php else: ?>prosseguir<?php endif; ?>" />
                     			<fieldset>Endereço: <input type="text" name="url" value="<?php echo @$_REQUEST['url']; ?>" /></fieldset>
                                 <?php if (@$_GET['error'] == 'load') : ?><span class="error">Não foi possível carregar a página. Por favor, confira o endereço e tente novamente.</span><?php endif; ?>

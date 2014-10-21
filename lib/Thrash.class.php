@@ -94,14 +94,14 @@ class Thrash {
 		if ($old && $today->diff($date)->days <= 1) {
 			$db->prepare("update thrash set image_owner_id={$old->id} where id={$new->id}")->execute();
 		} else {
-			$basePath = $_SERVER['DOCUMENT_ROOT'].'/';
+			$basePath = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).'/';
 			$path = $basePath.Thrash::$image_storage_base;
 			$return = shell_exec($basePath."capture.sh \"$url\" $path{$new->code}.png");
 			$sliceHeight = 768;
 			$info = getimagesize("$path{$new->code}.png");
 			if (!$info) {
 				$db->rollBack();
-				shell_exec("rm $path{$new->code}.png");
+				die("rm $path{$new->code}.png");
 				header("Location: ./?error=load&url=$url");
 				die();
 			} else if ($info[1] > $sliceHeight) {
