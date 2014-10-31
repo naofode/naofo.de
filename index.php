@@ -76,9 +76,9 @@ if ($code) {
         </div>
 
         <?php
-        if (isset($thrash) && $thrash && $thrash->blocked_domain) {
+        if (isset($thrash) && $thrash && $thrash->blocked_domain == 1) {
             $url = "http://webcache.googleusercontent.com/search?q=cache:".$thrash->original_url;
-            if (isset($_REQUEST['created'])) {
+            if (isset($_GET['created'])) {
                 include("inc/share.php");
                 ?>
                 <p>A URL que voc&ecirc; encurtou est&aacute; num dom&iacute;nio que bloqueia o naofo.de. Esta url funcionar&aacute; como um redirecionamento para o cache do google.</p>
