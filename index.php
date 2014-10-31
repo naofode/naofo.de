@@ -78,7 +78,7 @@ if ($code) {
         <?php
         if (isset($thrash) && $thrash && $thrash->blocked_domain == 1) {
             $url = "http://webcache.googleusercontent.com/search?q=cache:".$thrash->original_url;
-            if (isset($_REQUEST['created']) && $_REQUEST['created'] == "1") {
+            if (isset($_REQUEST['created'])) {
                 include("inc/share.php");
                 ?>
                 <p>A URL que voc&ecirc; encurtou est&aacute; num dom&iacute;nio que bloqueia o naofo.de. Esta url funcionar&aacute; como um redirecionamento para o cache do google.</p>
@@ -91,7 +91,7 @@ if ($code) {
         } else if (isset($thrash) && $thrash) {
             $imgs = $thrash->get_image_path();
             ?>
-            <p>URL original: <?php echo "<script>document.write(decode_base64('" . base64_encode("<a href=\"{$thrash->original_url}\">{$thrash->original_url}</a>") . "'));</script>"; ?></p>
+            <p>URL original: <?php echo "<script>document.write(decode_base64('" . base64_encode("<a href=\"{$thrash->original_url}\">{$thrash->original_url}</a>") . "'));</script>"; ?> - Capturada em: <?php echo date("d/m/Y H\hi", strtotime($thrash->date_created)); ?></p>
             <meta property="og:image" content="<?php echo $imgs[0]; ?>"/>
             <meta property="og:title" content="<?php echo $title; ?>"/>
             <?php
