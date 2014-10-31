@@ -89,7 +89,7 @@ class Thrash {
 		$db->beginTransaction();
 
 		$new = new Thrash($title, $url);
-		$new->blocked_domain = preg_match(Thrash::$blocked_domains_regex, $url);
+		$new->blocked_domain = preg_match(Thrash::$blocked_domains_regex, $url) ? 1 : 0;
 
 		$old = $new->blocked_domain ? null : Thrash::get_by_url($url);
 
