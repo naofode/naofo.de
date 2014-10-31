@@ -12,12 +12,6 @@ include_once("lib/recaptchalib.php");
 if ($code) {
     include_once("lib/Thrash.class.php");
     if ($thrash = Thrash::get_by_code($code)) {
-        //include_once("lib/Mobile_Detect.php");
-        //$detect = new Mobile_Detect();
-        //if ($detect->isMobile()) { //the big <img> isn't working on iOS, don't know why.
-        //    header("Location: ".$thrash->get_image_path());
-        //    die();
-        //}
         $title = "<strong>naofo.de</strong> | {$thrash->title}";
     } else {
         die('codigo invalido');
@@ -33,10 +27,9 @@ if ($code) {
                 if ($test || $resp->is_valid) {    
                     include_once("lib/Thrash.class.php");
                     $thrash = Thrash::create($_POST['url'], $_POST['title']);
-                    header("Location: {$thrash->code}");
+                    header("Location: {$thrash->code}?created");
                     die();
                 } else {
-                        # set the error code so that we can display it
                         $error = $resp->error;
                 }
         }
@@ -83,27 +76,26 @@ if ($code) {
         </div>
 
         <?php
-        if (isset($thrash) && $thrash) {
+        if (isset($thrash) && $thrash && $thrash->blocked_domain) {
+            $url = "http://webcache.googleusercontent.com/search?q=cache:".$thrash->original_url;
+            if (isset($_REQUEST['created'])) {
+                include("inc/share.php");
+                ?>
+                <p>A URL que voc&ecirc; encurtou est&aacute; num dom&iacute;nio que bloqueia o naofo.de. Esta url funcionar&aacute; como um redirecionamento para o cache do google.</p>
+                <p><a href="<?php echo $url; ?>">Exemplo do redirecionamento</a>.</p>
+                <?php
+            } else {
+                header("Location: $url");
+                die();
+            }
+        } else if (isset($thrash) && $thrash) {
             $imgs = $thrash->get_image_path();
             ?>
             <p>URL original: <?php echo "<script>document.write(decode_base64('" . base64_encode("<a href=\"{$thrash->original_url}\">{$thrash->original_url}</a>") . "'));</script>"; ?></p>
             <meta property="og:image" content="<?php echo $imgs[0]; ?>"/>
             <meta property="og:title" content="<?php echo $title; ?>"/>
-            <div id="fb-root"></div>
-            <script>(function(d, s, id) {
-              var js, fjs = d.getElementsByTagName(s)[0];
-              if (d.getElementById(id)) return;
-              js = d.createElement(s); js.id = id;
-              js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=746330455410930";
-              fjs.parentNode.insertBefore(js, fjs);
-            }(document, 'script', 'facebook-jssdk'));</script>
-            <div class="share">
-                <div>Compartilhe este naofo.de:</div>
-                <div class="fb-share-button" data-href="<?php echo $_SERVER['REQUEST_URI']; ?>" data-type="button_count"></div>
-                <a href="https://twitter.com/share" class="twitter-share-button" data-lang="pt">Tweetar</a>
-                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-            </div>
             <?php
+            include("inc/share.php");
             foreach ($imgs as $img) {
                 echo "<img src=\"${img}\" /><br/>";
             }

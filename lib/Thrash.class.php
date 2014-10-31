@@ -4,21 +4,29 @@ date_default_timezone_set('UTC');
 
 class Thrash {
 
+	static $url = "http://naofo.de/";
 	static $image_storage_base = "prints/";
+	static $blocked_domains_regex = '/(uol.)|(folha.)/';
 
 	public $id;
+	public $code;
 	public $title;
 	public $original_url;
 	public $creator_host;
 	public $date_created;
 	public $image_owner_id;
+	public $blocked_domain;
 	public $slices;
 	private $image_path;
 
-        public function __construct($title = null, $original_url = null) {
-                if ($title) $this->title = $title;
-                if ($original_url) $this->original_url = $original_url;
-        }
+	public function __construct($title = null, $original_url = null) {
+	        if ($title) $this->title = $title;
+	        if ($original_url) $this->original_url = $original_url;
+	}
+
+	public function get_url() {
+		return Thrash::$url . $this->code;
+	}
 
 	public function get_image_path() {
 		if ($this->image_owner_id) {
@@ -43,11 +51,12 @@ class Thrash {
 
 	public function save() {
 		global $db;
-		$query = $db->prepare("insert into thrash (date_created, title, original_url, image_storage_base, creator_host) values (now(),:title,:url,:image_storage_base,:creator_host)");
+		$query = $db->prepare("insert into thrash (date_created, title, original_url, image_storage_base, creator_host, blocked_domain) values (now(),:title,:url,:image_storage_base,:creator_host,:blocked_domain)");
 		$query->bindParam(':title', $this->title, PDO::PARAM_STR);
 		$query->bindParam(':url', $this->original_url, PDO::PARAM_STR);
 		$query->bindParam(':image_storage_base', Thrash::$image_storage_base, PDO::PARAM_STR);
 		$query->bindParam(':creator_host', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
+		$query->bindParam(':blocked_domain', $this->blocked_domain, PDO::PARAM_BOOL);
 		$query->execute();
 		$this->id = $db->lastInsertId();
 		$this->code = base_convert($this->id, 10, 32);
@@ -78,9 +87,12 @@ class Thrash {
 	static function create($url, $title) {
 		global $db;
 		$db->beginTransaction();
-		$old = Thrash::get_by_url($url);
 
 		$new = new Thrash($title, $url);
+		$new->blocked_domain = preg_match(Thrash::$blocked_domains_regex, $url);
+
+		$old = $new->blocked_domain ? null : Thrash::get_by_url($url);
+
 	    try {
 			$new->save();
 		} catch(PDOExecption $e) {
@@ -93,7 +105,7 @@ class Thrash {
 		}
 		if ($old && $today->diff($date)->days <= 1) {
 			$db->prepare("update thrash set image_owner_id={$old->id} where id={$new->id}")->execute();
-		} else {
+		} else if (!$new->blocked_domain) {
 			$basePath = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).'/';
 			$path = $basePath.Thrash::$image_storage_base;
 			$return = shell_exec($basePath."capture.sh \"$url\" $path{$new->code}.png");
