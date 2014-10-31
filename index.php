@@ -27,7 +27,7 @@ if ($code) {
                 if ($test || $resp->is_valid) {    
                     include_once("lib/Thrash.class.php");
                     $thrash = Thrash::create($_POST['url'], $_POST['title']);
-                    header("Location: {$thrash->code}?created");
+                    header("Location: ".$thrash->get_url()."?created=1");
                     die();
                 } else {
                         $error = $resp->error;
