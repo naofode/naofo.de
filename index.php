@@ -1,6 +1,7 @@
 <?php
 $publickey = "6LdvGPgSAAAAAOy3VM-V2RUyl2WaYF-JjPgp5Q4L";
 $privatekey = getenv('naofode_recaptchakey');
+die("code");
 $error = null;
 $uri = strtok($_SERVER['REQUEST_URI'], '?');
 $parts = explode('/', $uri);
@@ -27,7 +28,9 @@ if ($code) {
                 if ($test || $resp->is_valid) {    
                     include_once("lib/Thrash.class.php");
                     $thrash = Thrash::create($_POST['url'], $_POST['title']);
-                    header("Location: ".$thrash->get_url()."?created=1");
+                    $redirect_url = $thrash->get_url();
+                    if ($thrash->blocked_domain) $redirect_url .= "?created=1";
+                    header("Location: ".$redirect_url);
                     die();
                 } else {
                         $error = $resp->error;
