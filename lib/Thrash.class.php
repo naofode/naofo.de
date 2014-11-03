@@ -79,7 +79,7 @@ class Thrash {
 
 	static function get_by_url($url) {
 		global $db;
-		$query = $db->prepare("select * from thrash where original_url=? and image_owner_id is null order by date_created desc limit 1");
+		$query = $db->prepare("select * from thrash where original_url=? and image_owner_id is null and blocked_domain <> 1 order by date_created desc limit 1");
 		$query->execute(array($url));
 		return array_shift($query->fetchAll(PDO::FETCH_CLASS, "Thrash"));
 	}
