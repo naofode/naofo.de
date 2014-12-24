@@ -6,7 +6,7 @@ $uri = strtok($_SERVER['REQUEST_URI'], '?');
 $parts = explode('/', $uri);
 $code = array_pop($parts);
 $title = "<strong>naofo.de</strong> | encurtador higiênico de chorume";
-
+date_default_timezone_set("America/Sao_Paulo");
 include_once("lib/recaptchalib.php");
 
 if ($code) {
