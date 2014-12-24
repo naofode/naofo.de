@@ -1,6 +1,5 @@
 <?php
 $db = new PDO(getenv('naofode_dsn'), getenv('naofode_dbuser'), getenv('naofode_dbpass'));
-date_default_timezone_set('UTC');
 
 class Thrash {
 
