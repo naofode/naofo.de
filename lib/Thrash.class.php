@@ -51,7 +51,8 @@ class Thrash {
 
 	public function save() {
 		global $db;
-		$query = $db->prepare("insert into thrash (date_created, title, original_url, image_storage_base, creator_host, blocked_domain) values (now(),:title,:url,:image_storage_base,:creator_host,:blocked_domain)");
+		$query = $db->prepare("insert into thrash (date_created, title, original_url, image_storage_base, creator_host, blocked_domain) values (:created,:title,:url,:image_storage_base,:creator_host,:blocked_domain)");
+		$query->bindParam(':created', date("Y-m-d H:i:s"), PDO::PARAM_STR);
 		$query->bindParam(':title', $this->title, PDO::PARAM_STR);
 		$query->bindParam(':url', $this->original_url, PDO::PARAM_STR);
 		$query->bindParam(':image_storage_base', Thrash::$image_storage_base, PDO::PARAM_STR);
