@@ -113,7 +113,7 @@ class Thrash {
 			$info = getimagesize("$path{$new->code}.png");
 			if (!$info) {
 				$db->rollBack();
-				die("rm $path{$new->code}.png");
+				shell_exec("rm $path{$new->code}.png");
 				header("Location: ./?error=load&url=$url");
 				die();
 			} else if ($info[1] > $sliceHeight) {
