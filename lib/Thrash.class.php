@@ -1,9 +1,12 @@
 <?php
-$db = new PDO(getenv('naofode_dsn'), getenv('naofode_dbuser'), getenv('naofode_dbpass'));
+
+include("../static.php");
+
+$db = new PDO($dsn, $dbuser, $dbpass);
 
 class Thrash {
 
-	static $url = "http://naofo.de/";
+	static $url = "$url";
 	static $image_storage_base = "prints/";
 	static $blocked_domains_regex = '/(uol.)|(folha.)/';
 
