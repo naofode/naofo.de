@@ -6,7 +6,7 @@ $db = new PDO($dsn, $dbuser, $dbpass);
 
 class Thrash {
 
-	static $url = "$url";
+	static $url = "http://$site/";
 	static $image_storage_base = "prints/";
 	static $blocked_domains_regex = '/(uol.)|(folha.)/';
 
