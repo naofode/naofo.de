@@ -1,12 +1,10 @@
 <?php
 
-include("../static.php");
-
-$db = new PDO($dsn, $dbuser, $dbpass);
+include("static.php");
 
 class Thrash {
 
-	static $url = "http://$site/";
+	static $url = "http://nao.usem.xyz/";
 	static $image_storage_base = "prints/";
 	static $blocked_domains_regex = '/(uol.)|(folha.)/';
 
