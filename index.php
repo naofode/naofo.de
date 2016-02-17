@@ -1,18 +1,16 @@
 <?php
-$publickey = "6LdvGPgSAAAAAOy3VM-V2RUyl2WaYF-JjPgp5Q4L";
-$privatekey = getenv('naofode_recaptchakey');
 $error = null;
 $uri = strtok($_SERVER['REQUEST_URI'], '?');
 $parts = explode('/', $uri);
 $code = array_pop($parts);
-$title = "<strong>naofo.de</strong> | encurtador higiênico de chorume";
 date_default_timezone_set("America/Sao_Paulo");
+include("static.php");
 include_once("lib/recaptchalib.php");
 
 if ($code) {
     include_once("lib/Thrash.class.php");
     if ($thrash = Thrash::get_by_code($code)) {
-        $title = "<strong>naofo.de</strong> | {$thrash->title}";
+        $title = "<strong>$site</strong> | {$thrash->title}";
     } else {
         die('codigo invalido');
     }
@@ -83,7 +81,7 @@ if ($code) {
             if (isset($_REQUEST['created'])) {
                 include("inc/share.php");
                 ?>
-                <p>A URL que voc&ecirc; encurtou est&aacute; num dom&iacute;nio que bloqueia o naofo.de. Esta url funcionar&aacute; como um redirecionamento para o cache do google.</p>
+                <p>A URL que voc&ecirc; encurtou est&aacute; num dom&iacute;nio que bloqueia o <?php echo $site; ?>. Esta url funcionar&aacute; como um redirecionamento para o cache do google.</p>
                 <p><a href="<?php echo $url; ?>">Exemplo do redirecionamento</a>.</p>
                 <?php
             } else {
@@ -126,12 +124,12 @@ if ($code) {
 
                     <aside>
                         <h3>O que é?</h3>
-                        <p>O naofo.de é um serviço de compartilhamento/encurtamento de URLs com propósito de denúncia/comentário crítico. Em vez da página original, a URL encurtada direciona para uma cópia (em imagem) do conteúdo, de modo que não se aumentará o tráfego ou o <em>pagerank</em> da página em questão. Além disso, a cópia ficará disponível mesmo que a página original seja tirada do ar.</p>
+                        <p>O <?php echo $site; ?> é um serviço de compartilhamento/encurtamento de URLs com propósito de denúncia/comentário crítico. Em vez da página original, a URL encurtada direciona para uma cópia (em imagem) do conteúdo, de modo que não se aumentará o tráfego ou o <em>pagerank</em> da página em questão. Além disso, a cópia ficará disponível mesmo que a página original seja tirada do ar.</p>
                         <p><strong>IMPORTANTE</strong><br/>
                         	NÃO compartilhe conteúdo ilegal e criminoso, tais como pedofilia ou exposição vexatória de pessoas, por este serviço. O conteúdo será retirado do ar e seu acesso ao serviço barrado. Eventualmente forneceremos seu IP a autoridades competentes.
                         	Há outras formas de denunciar e é criminosa (além de contraproducente) a reprodução desses conteúdos. Use, por exemplo: <a href="http://www.dpf.gov.br/servicos/fale-conosco/denuncias">http://www.dpf.gov.br/servicos/fale-conosco/denuncias</a>
                             <p>
-                            Tampouco use o naofo.de como um encurtador comum: fazer cópia do conteúdo implica em custos de servidor, e um crescimento da demanda tornaria inviável o serviço, que jamais terá fins lucrativos. Por favor, use apenas para denúncia e compartilhamento de conteúdo desprezível.
+                            Tampouco use o <?php echo $site; ?> como um encurtador comum: fazer cópia do conteúdo implica em custos de servidor, e um crescimento da demanda tornaria inviável o serviço, que jamais terá fins lucrativos. Por favor, use apenas para denúncia e compartilhamento de conteúdo desprezível.
                             </p>
                         </p>
                     </aside>
@@ -145,7 +143,7 @@ if ($code) {
             <footer class="wrapper">
                 <a href="https://github.com/naofode/naofo.de">código fonte</a>
                 &nbsp;&nbsp;-&nbsp;&nbsp;
-                <a title="botao naofo.de" href='javascript:var d=document,b=d.body,div=d.createElement("div");div.innerHTML="<form accept-charset=\"UTF-8\" action=\"http://naofo.de\" method=\"post\" target=\"_blank\"><input name=\"url\"><input name=\"title\"></form>";div.style.display="none";b.appendChild(div);var f=div.children[0];f["url"].value=window.location.href;f["title"].value=d.title;f.submit();' onclick="return false;">botão naofo.de</a> (arraste para sua barra de favoritos e clique quando estiver na página que deseja encurtar)
+                <a title="botao <?php echo $site; ?>" href='javascript:var d=document,b=d.body,div=d.createElement("div");div.innerHTML="<form accept-charset=\"UTF-8\" action=\"http://<?php echo $site; ?>\" method=\"post\" target=\"_blank\"><input name=\"url\"><input name=\"title\"></form>";div.style.display="none";b.appendChild(div);var f=div.children[0];f["url"].value=window.location.href;f["title"].value=d.title;f.submit();' onclick="return false;">botão <?php echo $site; ?></a> (arraste para sua barra de favoritos e clique quando estiver na página que deseja encurtar)
             </footer>
         </div>
 
