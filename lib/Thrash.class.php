@@ -1,6 +1,7 @@
 <?php
 
 include("static.php");
+$db = new PDO($dsn, $dbuser, $dbpass);
 
 class Thrash {
 
