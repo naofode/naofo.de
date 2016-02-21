@@ -1,7 +1,5 @@
 <?php
 
-include("static.php");
-
 $dsn = getenv('naofode_dsn');
 $dbuser = getenv('naofode_dbuser');
 $dbpass = getenv('naofode_dbpass');
@@ -9,7 +7,8 @@ $db = new PDO($dsn, $dbuser, $dbpass);
 
 class Thrash {
 
-	static $url = "http://nao.usem.xyz/";
+	// TODO: Porque é que 'static $url = "http://$site/";' não funciona?
+	static $url = "http://naofo.de/";
 	static $image_storage_base = "prints/";
 	static $blocked_domains_regex = '/(uol.)|(folha.)/';
 

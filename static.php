@@ -1,10 +1,9 @@
 <?php
 
-$site = 'nao.usem.xyz';
+$site = 'naofo.de';
 $title = "<strong>$site</strong> | encurtador higiênico de chorume";
-
-// Variáveis secretas
-include("private.php");
+$publickey = getenv('naofode_publickey');
+$privatekey = getenv('naofode_privatekey');
 
 ?>
 
