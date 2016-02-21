@@ -28,12 +28,13 @@ steps:
 
 1. add apache variables in `/etc/apache2/envvars`:
 
-	export naofode_recaptchakey='???'  
-	export naofode_dsn='mysql:host=localhost;dbname=???'  
+	export naofode_privatekey='`recaptcha-public-key`'  
+	export naofode_publickey='`recaptcha-private-key`'  
+	export naofode_dsn='mysql:host=localhost;dbname=naofode'  
 	export naofode_dbuser='???'  
 	export naofode_dbpass='???'
 
-2. alter recaptcha site key in `index.php`
+2. alter recaptcha site key in `static.php`
 
 3. alter analytics javascript in `index.php`
 
@@ -41,9 +42,9 @@ steps:
 
 	mysql> source /path/to/schema.sql
 
-5. edit files `static.php` and `private.php` to match your local configuration.
+5. edit files `static.php` to match your local configuration.
 
-	also you'll have to change line 12 of file `lib/Thrash.class.php` to suit your environment.
+	also, currently you'll have to change line 11 of file `lib/Thrash.class.php` to suit your environment.
 
 6. alter `<Directory /var/www/>` in `/etc/apache2/apache2.conf`:
 
@@ -74,4 +75,4 @@ On a headless server I had to use [xfvb](http://www.x.org/releases/X11R7.6/doc/m
 
 On a debian based system you have to: `sudo apt-get install xvfb`
 
-Otherwise, the `capture.sh` file should be changed.
+Otherwise, the `capture.sh` file should be changed to not use `xvfb`.
