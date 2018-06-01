@@ -18,6 +18,7 @@ dependencies:
 * mysql
 * wkhtmltoimage
 * imagemagick
+* composer
 
 other requirements:
 
@@ -26,46 +27,36 @@ other requirements:
 
 steps:
 
-1. add apache variables in `/etc/apache2/envvars`:
+1. Rename `.env.example` to `.env`
 
-	export naofode_privatekey='`recaptcha-public-key`'  
-	export naofode_publickey='`recaptcha-private-key`'  
-	export naofode_dsn='mysql:host=localhost;dbname=naofode'  
-	export naofode_dbuser='???'  
-	export naofode_dbpass='???'
+2. Edit the `.env` with your data
 
-2. alter recaptcha site key in `static.php`
+3. Create database table:
+```shell
+mysql> source /path/to/schema.sql
+```
 
-3. alter analytics javascript in `index.php`
+4. Alter `<Directory /var/www/>` in `/etc/apache2/apache2.conf`:
+```shell
+AllowOverride All
+```
 
-4. create database table:
-
-	mysql> source /path/to/schema.sql
-
-5. edit files `static.php` to match your local configuration.
-
-	also, currently you'll have to change line 11 of file `lib/Thrash.class.php` to suit your environment.
-
-6. alter `<Directory /var/www/>` in `/etc/apache2/apache2.conf`:
-
-	AllowOverride All
-
-7. execute
-
-	mkdir /var/www/html/prints
-
-8. execute
-
-	chown www-data:www-data /var/www/html/prints
-
-9. execute
-
-	a2enmod rewrite
-
-10. execute
-
-	service apache2 restart
-
+5. Execute
+```shell
+chown www-data:www-data /var/www/html/prints
+```
+6. Execute
+```shell
+a2enmod rewrite
+```
+7. Execute
+```shell
+service apache2 restart
+```
+8. Install composer dependences
+```shell
+composer install
+```
 Troubleshooting
 --
 

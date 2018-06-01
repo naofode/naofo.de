@@ -2,3 +2,8 @@
 prints/*
 private.php
 */private.php
+
+# New ignores
+vendor/
+.env
+composer.lock

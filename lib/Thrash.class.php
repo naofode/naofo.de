@@ -1,14 +1,12 @@
 <?php
+$dsn = getenv('DSN');
+$dbuser = getenv('DBUSER');
+$dbpass = getenv('DBPASS');
 
-$dsn = getenv('naofode_dsn');
-$dbuser = getenv('naofode_dbuser');
-$dbpass = getenv('naofode_dbpass');
 $db = new PDO($dsn, $dbuser, $dbpass);
 
 class Thrash {
 
-	// TODO: Porque é que 'static $url = "http://$site/";' não funciona?
-	static $url = "http://naofo.de/";
 	static $image_storage_base = "prints/";
 	static $blocked_domains_regex = '/(uol.)|(folha.)/';
 
@@ -24,12 +22,12 @@ class Thrash {
 	private $image_path;
 
 	public function __construct($title = null, $original_url = null) {
-	        if ($title) $this->title = $title;
-	        if ($original_url) $this->original_url = $original_url;
+		if ($title) $this->title = $title;
+		if ($original_url) $this->original_url = $original_url;
 	}
 
 	public function get_url() {
-		return Thrash::$url . $this->code;
+		return getenv('SITE_URL') . $this->code;
 	}
 
 	public function get_image_path() {
@@ -65,7 +63,7 @@ class Thrash {
 		$query->execute();
 		$this->id = $db->lastInsertId();
 		$this->code = base_convert($this->id, 10, 32);
-		$db->prepare("update thrash set code='{$this->code}' where id={$this->id}")->execute();
+		$db->query("update thrash set code='{$this->code}' where id={$this->id}");
 	}
 
 	static function get($id) {
@@ -109,7 +107,7 @@ class Thrash {
 			$today = new DateTime;
 		}
 		if ($old && $today->diff($date)->days <= 1) {
-			$db->prepare("update thrash set image_owner_id={$old->id} where id={$new->id}")->execute();
+			$db->query("update thrash set image_owner_id={$old->id} where id={$new->id}");
 		} else if (!$new->blocked_domain) {
 			$basePath = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).'/';
 			$path = $basePath.Thrash::$image_storage_base;
@@ -124,7 +122,7 @@ class Thrash {
 			} else if ($info[1] > $sliceHeight) {
 				$slices = ceil($info[1]/$sliceHeight);
 				shell_exec($basePath."slice.sh $path{$new->code} $slices");
-				$db->prepare("update thrash set slices=$slices where id={$new->id}")->execute();
+				$db->query("update thrash set slices=$slices where id={$new->id}");
 			}
 			shell_exec($basePath."optimize.sh $path{$new->code}.png");
 		}
