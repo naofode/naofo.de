@@ -18,6 +18,7 @@ dependencies:
 * mysql
 * wkhtmltoimage
 * imagemagick
+* composer
 
 other requirements:
 
@@ -49,6 +50,10 @@ steps:
 7. execute
 
 	service apache2 restart
+
+8. install composer dependences
+
+	composer install
 
 Troubleshooting
 --
