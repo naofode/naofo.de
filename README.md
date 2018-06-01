@@ -31,30 +31,32 @@ steps:
 
 2. Edit the `.env` with your data
 
-3. create database table:
+3. Create database table:
+```shell
+mysql> source /path/to/schema.sql
+```
 
-	mysql> source /path/to/schema.sql
+4. Alter `<Directory /var/www/>` in `/etc/apache2/apache2.conf`:
+```shell
+AllowOverride All
+```
 
-4. alter `<Directory /var/www/>` in `/etc/apache2/apache2.conf`:
-
-	AllowOverride All
-
-5. execute
-
-	chown www-data:www-data /var/www/html/prints
-
-6. execute
-
-	a2enmod rewrite
-
-7. execute
-
-	service apache2 restart
-
-8. install composer dependences
-
-	composer install
-
+5. Execute
+```shell
+chown www-data:www-data /var/www/html/prints
+```
+6. Execute
+```shell
+a2enmod rewrite
+```
+7. Execute
+```shell
+service apache2 restart
+```
+8. Install composer dependences
+```shell
+composer install
+```
 Troubleshooting
 --
 
